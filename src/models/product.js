@@ -38,6 +38,7 @@ const productSchema = mongoose.Schema(
 			type: Number,
 			required: [true, "Product price is required"],
 		},
+		discount: Number,
 		category: {
 			type: String,
 			required: [true, "Product category is required"],
