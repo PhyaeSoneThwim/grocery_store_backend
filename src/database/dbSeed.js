@@ -4,7 +4,6 @@ const Product = require("../models/product");
 const User = require("../models/user");
 const users = require("../data/users");
 const products = require("../data/products");
-
 const dbConnect = require("./dbConnect");
 
 dbConnect();
