@@ -18,7 +18,7 @@ const importData = async () => {
 		await Product.deleteMany();
 
 		// @desc -> first insert user data
-		const userLists = await User.insertMany(users);
+		const userLists = await User.create(users);
 
 		// @desc -> get admin user
 		const admin = userLists.find((user) => user.role === "admin");
@@ -29,7 +29,7 @@ const importData = async () => {
 		});
 
 		// @desc -> insert product lists
-		await Product.insertMany(productLists);
+		await Product.create(productLists);
 		console.log("Inserted raw data into database".cyan.bold);
 		process.exit();
 	} catch (error) {
