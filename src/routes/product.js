@@ -4,6 +4,7 @@ const { resizeImage } = require("../middlewares/resize");
 const protect = require("../middlewares/protect");
 const restrictTo = require("../middlewares/restrictTo");
 const productController = require("../controllers/product");
+const reviewRoute = require("./review");
 
 const router = express.Router();
 router
@@ -31,5 +32,7 @@ router
     restrictTo("admin", "super-admin"),
     productController.deleteProduct
   );
+
+router.use("/:productId/reviews", reviewRoute);
 
 module.exports = router;

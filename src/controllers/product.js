@@ -3,6 +3,7 @@ const catchAsync = require("express-async-handler");
 const unLink = require("../utils/unLink");
 const Product = require("../models/product");
 const AppError = require("../utils/appError");
+const Review = require("../models/review");
 
 /**
  * @desc   -> Add new product document
@@ -11,13 +12,13 @@ const AppError = require("../utils/appError");
  * @allow  -> ["admin","super-admin"]
  */
 exports.addProduct = catchAsync(async (req, res, next) => {
-	const product = await Product.create(req.body);
-	res.status(201).json({
-		status: "success",
-		data: {
-			product,
-		},
-	});
+  const product = await Product.create(req.body);
+  res.status(201).json({
+    status: "success",
+    data: {
+      product,
+    },
+  });
 });
 
 /**
@@ -26,16 +27,16 @@ exports.addProduct = catchAsync(async (req, res, next) => {
  * @access -> Public
  */
 exports.getProduct = catchAsync(async (req, res, next) => {
-	const product = await Product.findById(req.params.id);
-	if (!product) {
-		return next(new AppError("No product fond", 404));
-	}
-	res.status(200).json({
-		status: "success",
-		data: {
-			product,
-		},
-	});
+  const product = await Product.findById(req.params.id);
+  if (!product) {
+    return next(new AppError("No product fond", 404));
+  }
+  res.status(200).json({
+    status: "success",
+    data: {
+      product,
+    },
+  });
 });
 
 /**
@@ -44,16 +45,16 @@ exports.getProduct = catchAsync(async (req, res, next) => {
  * @access -> Public
  */
 exports.getProducts = catchAsync(async (req, res, next) => {
-	const products = await Product.find({});
-	if (!products.length > 0) {
-		return next(new AppError("No products found", 404));
-	}
-	res.status(200).json({
-		status: "success",
-		data: {
-			products,
-		},
-	});
+  const products = await Product.find({});
+  if (!products.length > 0) {
+    return next(new AppError("No products found", 404));
+  }
+  res.status(200).json({
+    status: "success",
+    data: {
+      products,
+    },
+  });
 });
 
 /**
@@ -63,27 +64,27 @@ exports.getProducts = catchAsync(async (req, res, next) => {
  * @allow  -> ["admin","super-admin"]
  */
 exports.updateProduct = catchAsync(async (req, res, next) => {
-	const product = await Product.findById(req.params.id);
-	if (!product) {
-		return next(new AppError("No product fond", 404));
-	}
+  const product = await Product.findById(req.params.id);
+  if (!product) {
+    return next(new AppError("No product fond", 404));
+  }
 
-	// @desc -> delete & update with new image
-	if (req.body.image) {
-		unLink(`public/img/products/${product.image}`);
-	}
+  // @desc -> delete & update with new image
+  if (req.body.image) {
+    unLink(`public/img/products/${product.image}`);
+  }
 
-	const updatedProduct = await Product.findByIdAndUpdate(
-		req.params.id,
-		req.body,
-		{ new: true, runValidators: true },
-	);
-	res.status(200).json({
-		status: "success",
-		data: {
-			product: updatedProduct,
-		},
-	});
+  const updatedProduct = await Product.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true, runValidators: true }
+  );
+  res.status(200).json({
+    status: "success",
+    data: {
+      product: updatedProduct,
+    },
+  });
 });
 
 /**
@@ -93,12 +94,28 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
  * @allow  -> ["admin","super-admin"]
  */
 exports.deleteProduct = catchAsync(async (req, res, next) => {
-	const product = await Product.findById(req.params.id);
-	if (!product) {
-		return next(new AppError("No product fond", 404));
-	}
-	await product.remove();
-	res.status(200).json({
-		status: "success",
-	});
+  const product = await Product.findById(req.params.id);
+  if (!product) {
+    return next(new AppError("No product fond", 404));
+  }
+  await product.remove();
+  res.status(200).json({
+    status: "success",
+  });
+});
+
+exports.setProductUser = catchAsync(async (req, res, next) => {
+  if (!req.body.user) req.body.user = req.user._id;
+  if (!req.body.product) req.body.product = req.params.id;
+  next();
+});
+
+exports.addReview = catchAsync(async (req, res, next) => {
+  const review = await Review.create(req.body);
+  res.status(201).json({
+    status: "success",
+    data: {
+      review,
+    },
+  });
 });
