@@ -3,9 +3,14 @@ const userController = require("../controllers/user");
 const { uploadProfile } = require("../middlewares/upload");
 const { resizeProfile } = require("../middlewares/resize");
 const protect = require("../middlewares/protect");
+const restrictTo = require("../middlewares/restrictTo");
 const router = express.Router();
 
-router.route("/").get(userController.getUsers);
+router.use(protect, restrictTo("super-admin"));
+router
+  .route("/")
+  .post(uploadProfile, resizeProfile, userController.addUser)
+  .get(userController.getUsers);
 router
   .route("/:id")
   .get(userController.getUser)

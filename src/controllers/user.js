@@ -51,6 +51,30 @@ exports.login = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * @desc   -> method to add new user
+ * @route  -> POST /api/users
+ * @access -> Private
+ * @allow  -> [super-admin]
+ * @status -> Finished
+ */
+exports.addUser = catchAsync(async (req, res, next) => {
+  const user = await User.create(req.body);
+  res.status(201).json({
+    status: "success",
+    data: {
+      user,
+    },
+  });
+});
+
+/**
+ * @desc   -> method to get user by _id
+ * @route  -> GET /api/users/:id
+ * @access -> Private
+ * @allow  -> [super-admin]
+ * @status -> Finished
+ */
 exports.getUser = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.params.id);
   if (!user) {
@@ -64,8 +88,15 @@ exports.getUser = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * @desc   -> method to get all user
+ * @route  -> GET /api/users
+ * @access -> Private
+ * @allow  -> [super-admin]
+ * @status -> Finished
+ */
 exports.getUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find({});
+  const users = await User.find({ role: "admin" });
   if (!users.length > 0) {
     return next(new AppError("No users found", 404));
   }
@@ -77,6 +108,13 @@ exports.getUsers = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * @desc   -> method to update user by _id
+ * @route  -> PUT /api/users/:id
+ * @access -> Private
+ * @allow  -> [super-admin]
+ * @status -> Finished
+ */
 exports.updateUser = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.params.id);
   if (!user) {
@@ -97,6 +135,13 @@ exports.updateUser = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * @desc   -> method to delete user by _id
+ * @route  -> DELETE /api/users/:id
+ * @access -> Private
+ * @allow  -> [super-admin]
+ * @status -> Finished
+ */
 exports.deleteUser = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.params.id);
   if (!user) {
@@ -108,13 +153,19 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * @desc   -> update current login user info
+ * @route  -> GET /api/auth/me
+ * @access -> Private
+ * @status -> Finished
+ */
 exports.getMe = catchAsync(async (req, res, next) => {
   req.params.id = req.user._id;
   next();
 });
 
 /**
- * @desc   -> update current login user info
+ * @desc   -> update current login user password
  * @route  -> PUT /api/auth/update-password
  * @access -> Private
  * @status -> Finished
