@@ -6,13 +6,13 @@ const productController = require("../controllers/product");
 const router = express.Router();
 
 router
-	.route("/")
-	.post(uploadImage, resizeImage, productController.addProduct)
-	.get(productController.getProducts);
+  .route("/")
+  .post(uploadImage, resizeImage, productController.addProduct)
+  .get(productController.getProducts);
 router
-	.route("/:id")
-	.get(productController.getProduct)
-	.put(uploadImage, resizeImage, productController.updateProduct)
-	.delete(productController.deleteProduct);
+  .route("/:id")
+  .get(productController.getProduct)
+  .put(uploadImage, resizeImage, productController.updateProduct)
+  .delete(productController.deleteProduct);
 
 module.exports = router;
