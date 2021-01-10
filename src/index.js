@@ -4,11 +4,14 @@ const express = require("express");
 // @desc -> initialized express app
 const app = express();
 
-// @desc -> setup express middlewares
+// @desc -> setup express app middlewares
 require("./middlewares/app")(app);
 
 // @desc -> setup routes
 require("./routes")(app);
+
+// @desc -> setup express error middlewares
+require("./middlewares/error")(app);
 
 // @desc -> connect to mongodb
 require("./database/dbConnect")();

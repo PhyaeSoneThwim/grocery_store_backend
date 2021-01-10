@@ -1,6 +1,7 @@
 const path = require("path");
 const express = require("express");
 const morgan = require("morgan");
+const AppError = require("../utils/appError");
 module.exports = (app) => {
 	// @desc -> json parsing middleware
 	app.use(express.json());
