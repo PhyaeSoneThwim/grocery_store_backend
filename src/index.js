@@ -1,21 +1,17 @@
 require("dotenv").config();
-const colors = require("colors");
-const morgan = require("morgan");
 const express = require("express");
-const dbConnect = require("./database/dbConnect");
 
+// @desc -> initialized express app
 const app = express();
 
-// @desc -> json parsing middleware
-app.use(express.json());
+// @desc -> setup express middlewares
+require("./middlewares/app")(app);
 
-if (process.env.NODE_ENV === "development") {
-	// @desc -> logging request & response
-	app.use(morgan("dev"));
-}
+// @desc -> setup routes
+require("./routes")(app);
 
 // @desc -> connect to mongodb
-dbConnect();
+require("./database/dbConnect")();
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

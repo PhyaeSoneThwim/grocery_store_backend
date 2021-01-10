@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const unLink = require("../utils/unLink");
 
 const reviewSchema = mongoose.Schema(
 	{
@@ -38,7 +39,10 @@ const productSchema = mongoose.Schema(
 			type: Number,
 			required: [true, "Product price is required"],
 		},
-		discount: Number,
+		discount: {
+			type: Number,
+			default: 0,
+		},
 		category: {
 			type: String,
 			required: [true, "Product category is required"],
@@ -46,7 +50,6 @@ const productSchema = mongoose.Schema(
 		countInStock: {
 			type: Number,
 			required: [true, "In-stock count is required"],
-			default: 0,
 		},
 		reviews: [reviewSchema],
 		rating: {
@@ -60,6 +63,14 @@ const productSchema = mongoose.Schema(
 	},
 	{ timestamps: true },
 );
+
+productSchema.pre("remove", function (next) {
+	if (this.image) {
+		unLink(`public/img/products/${this.image}`);
+		next();
+	}
+	next();
+});
 
 const Product = mongoose.model("Product", productSchema);
 module.exports = Product;
