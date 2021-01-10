@@ -1,18 +1,35 @@
 const express = require("express");
 const { uploadImage } = require("../middlewares/upload");
 const { resizeImage } = require("../middlewares/resize");
+const protect = require("../middlewares/protect");
+const restrictTo = require("../middlewares/restrictTo");
 const productController = require("../controllers/product");
 
 const router = express.Router();
-
 router
   .route("/")
-  .post(uploadImage, resizeImage, productController.addProduct)
+  .post(
+    protect,
+    restrictTo("admin", "super-admin"),
+    uploadImage,
+    resizeImage,
+    productController.addProduct
+  )
   .get(productController.getProducts);
 router
   .route("/:id")
   .get(productController.getProduct)
-  .put(uploadImage, resizeImage, productController.updateProduct)
-  .delete(productController.deleteProduct);
+  .put(
+    protect,
+    restrictTo("admin", "super-admin"),
+    uploadImage,
+    resizeImage,
+    productController.updateProduct
+  )
+  .delete(
+    protect,
+    restrictTo("admin", "super-admin"),
+    productController.deleteProduct
+  );
 
 module.exports = router;
