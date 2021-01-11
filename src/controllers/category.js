@@ -7,7 +7,7 @@ const Category = require("../models/category");
  * @route  -> POST /api/categories
  * @access -> Private
  * @allow  -> ["super-admin","admin"]
- * @status -> Progress
+ * @status -> Finished
  */
 exports.addCategory = catchAsync(async (req, res, next) => {
   const category = await Category.create(req.body);
@@ -23,7 +23,7 @@ exports.addCategory = catchAsync(async (req, res, next) => {
  * @desc   -> Get category by _id
  * @route  -> GET /api/categories/:id
  * @access -> Public
- * @status -> Progress
+ * @status -> Finished
  */
 exports.getCategory = catchAsync(async (req, res, next) => {
   const category = await Category.findById(req.params.id);
@@ -42,7 +42,7 @@ exports.getCategory = catchAsync(async (req, res, next) => {
  * @desc   -> Get all categories
  * @route  -> GET /api/categories
  * @access -> Public
- * @status -> Progress
+ * @status -> Finished
  */
 exports.getCategories = catchAsync(async (req, res, next) => {
   const categories = await Category.find({});
@@ -62,7 +62,7 @@ exports.getCategories = catchAsync(async (req, res, next) => {
  * @route  -> PUT /api/categories/:id
  * @access -> Private
  * @allow  -> ["super-admin","admin"]
- * @status -> Progress
+ * @status -> Finished
  */
 exports.updateCategory = catchAsync(async (req, res, next) => {
   const category = await Category.findById(req.params.id);
@@ -87,22 +87,15 @@ exports.updateCategory = catchAsync(async (req, res, next) => {
  * @route  -> DELETE /api/categories/:id
  * @access -> Private
  * @allow  -> ["super-admin","admin"]
- * @status -> Progress
+ * @status -> Finished
  */
 exports.deleteCategory = catchAsync(async (req, res, next) => {
   const category = await Category.findById(req.params.id);
   if (!category) {
     return next(new AppError("No category found", 404));
   }
-  const updatedCategory = await Category.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true, runValidators: true }
-  );
+  await category.remove();
   res.status(200).json({
     status: "success",
-    data: {
-      category: updatedCategory,
-    },
   });
 });

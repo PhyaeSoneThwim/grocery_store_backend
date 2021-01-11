@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
+const Product = require("./product");
 const categorySchema = mongoose.Schema(
   {
     title: {
@@ -24,8 +25,24 @@ const categorySchema = mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// slugify incoming category title for better search
 categorySchema.pre("save", function (next) {
   this.slug = slugify(this.title, { lower: true });
+  next();
+});
+
+// delete all products related to deleted category
+categorySchema.pre("remove", async function (next) {
+  const products = await Product.find({ category: this._id });
+
+  // use doc.remove to apply pre-remove middleware
+  if (products.length > 0) {
+    products.map(async (product) => {
+      await product.remove({ category: this._id });
+    });
+    next();
+  }
   next();
 });
 const Category = mongoose.model("Category", categorySchema);
