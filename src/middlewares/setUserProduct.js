@@ -1,3 +1,4 @@
+const catchAsync = require("express-async-handler");
 // @desc   -> attach product and user for new review
 module.exports = catchAsync(async (req, res, next) => {
   if (!req.body.user) req.body.user = req.user._id;

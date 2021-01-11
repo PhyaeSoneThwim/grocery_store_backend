@@ -1,5 +1,4 @@
 const express = require("express");
-const router = express.Router();
 const wishlistController = require("../controllers/wishlist");
 const protect = require("../middlewares/protect");
 const restrictTo = require("../middlewares/restrictTo");
