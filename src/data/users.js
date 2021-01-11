@@ -1,15 +1,65 @@
-const faker = require("faker");
-const _ = require("lodash");
-const roles = require("./roles");
-
-module.exports = _.range(1, 11).map((value) => {
-	const password = faker.internet.password();
-	const role = roles[_.random(0, 2)];
-	return {
-		name: faker.name.findName(),
-		email: faker.internet.email(),
-		password: password,
-		confirmPassword: password,
-		role: role,
-	};
-});
+module.exports = [
+  {
+    name: "Kenzi Webb",
+    email: "kenzi.webb@example.com",
+    password: "test-user1234",
+    confirmPassword: "test-user1234",
+  },
+  {
+    name: "Edith Howell",
+    email: "edith.howell@example.com",
+    password: "test-user1234",
+    confirmPassword: "test-user1234",
+  },
+  {
+    name: "Anita Hicks",
+    email: "anita.hicks@example.com",
+    password: "test-user1234",
+    confirmPassword: "test-user1234",
+  },
+  {
+    name: "Marcia Wood",
+    email: "marcia.wood@example.com",
+    password: "test-user1234",
+    confirmPassword: "test-user1234",
+  },
+  {
+    name: "Miguel Smith",
+    email: "miguel.smith@example.com",
+    password: "test-user1234",
+    confirmPassword: "test-user1234",
+  },
+  {
+    name: "Stacy Sullivan",
+    email: "stacy.sullivan@example.com",
+    password: "test-user1234",
+    confirmPassword: "test-user1234",
+  },
+  {
+    name: "Stella Vargas",
+    email: "stella.vargas@example.com",
+    password: "test-user1234",
+    confirmPassword: "test-user1234",
+  },
+  {
+    name: "Alexa Green",
+    email: "alexa.green@example.com",
+    password: "test-user1234",
+    confirmPassword: "test-user1234",
+    role: "super-admin",
+  },
+  {
+    name: "Floyd Burton",
+    email: "floyd.burton@example.com",
+    password: "test-user1234",
+    confirmPassword: "test-user1234",
+    role: "admin",
+  },
+  {
+    name: "Miriam Dunn",
+    email: "miriam.dunn@example.com",
+    password: "test-user1234",
+    confirmPassword: "test-user1234",
+    role: "admin",
+  },
+];

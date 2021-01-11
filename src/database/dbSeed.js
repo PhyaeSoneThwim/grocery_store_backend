@@ -1,10 +1,11 @@
 require("dotenv").config();
 const colors = require("colors");
-const Product = require("../models/product");
 const User = require("../models/user");
 const users = require("../data/users");
-const products = require("../data/products");
 const dbConnect = require("./dbConnect");
+
+// const products = require("../data/products");
+// const Product = require("../models/product");
 
 dbConnect();
 
@@ -13,29 +14,30 @@ dbConnect();
  * @desc -> seed data into database
  */
 const importData = async () => {
-	try {
-		await User.deleteMany();
-		await Product.deleteMany();
+  try {
+    await User.deleteMany();
 
-		// @desc -> first insert user data
-		const userLists = await User.create(users);
+    //await Product.deleteMany();
 
-		// @desc -> get admin user
-		const admin = userLists.find((user) => user.role === "admin");
+    // @desc -> first insert user data
+    //const userLists = await User.create(users);
 
-		// @desc -> attach admin user._id into product
-		const productLists = products.map((product) => {
-			return { ...product, user: admin._id };
-		});
+    // @desc -> get admin user
+    //const admin = userLists.find((user) => user.role === "admin");
 
-		// @desc -> insert product lists
-		await Product.create(productLists);
-		console.log("Inserted raw data into database".cyan.bold);
-		process.exit();
-	} catch (error) {
-		console.log(error.message.red.inverse);
-		process.exit(1);
-	}
+    // @desc -> attach admin user._id into product
+    // const productLists = products.map((product) => {
+    // 	return { ...product, user: admin._id };
+    // });
+
+    // @desc -> insert product lists
+    await User.create(users);
+    console.log("Inserted raw data into database".cyan.bold);
+    process.exit();
+  } catch (error) {
+    console.log(error.message.red.inverse);
+    process.exit(1);
+  }
 };
 
 /**
@@ -43,20 +45,19 @@ const importData = async () => {
  * @desc -> unseed data from database
  */
 const deleteData = async () => {
-	try {
-		await User.deleteMany();
-		await Product.deleteMany();
-
-		console.log("Deleted raw data from database".cyan.bold);
-		process.exit();
-	} catch (error) {
-		console.log(error.message.red.inverse);
-		process.exit(1);
-	}
+  try {
+    await User.deleteMany();
+    // await Product.deleteMany();
+    console.log("Deleted raw data from database".cyan.bold);
+    process.exit();
+  } catch (error) {
+    console.log(error.message.red.inverse);
+    process.exit(1);
+  }
 };
 
 if (process.argv[2] === "-d") {
-	deleteData();
+  deleteData();
 } else {
-	importData();
+  importData();
 }

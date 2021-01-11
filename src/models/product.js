@@ -36,8 +36,9 @@ const productSchema = mongoose.Schema(
       default: 0,
     },
     category: {
-      type: String,
-      required: [true, "Product category is required"],
+      type: mongoose.Schema.Types.ObjectId,
+      required: [true, "Category belonging to the product is required"],
+      ref: "Category",
     },
     countInStock: {
       type: Number,

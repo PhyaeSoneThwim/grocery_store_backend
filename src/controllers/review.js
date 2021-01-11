@@ -2,13 +2,6 @@ const catchAsync = require("express-async-handler");
 const AppError = require("../utils/appError");
 const Review = require("../models/review");
 
-// @desc   -> attach product and user for new review
-exports.setProductUser = catchAsync(async (req, res, next) => {
-  if (!req.body.user) req.body.user = req.user._id;
-  if (!req.body.product) req.body.product = req.params.productId;
-  next();
-});
-
 /**
  * @desc   -> add new review
  * @route  -> POST /api/products/:productId/reviews
@@ -17,7 +10,6 @@ exports.setProductUser = catchAsync(async (req, res, next) => {
  * @status -> Enhancement
  */
 exports.addReview = catchAsync(async (req, res, next) => {
-  console.log(req.body);
   const review = await Review.create(req.body);
   res.status(201).json({
     status: "success",

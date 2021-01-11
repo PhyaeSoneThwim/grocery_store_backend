@@ -4,6 +4,7 @@ const { resizeImage } = require("../middlewares/resize");
 const protect = require("../middlewares/protect");
 const restrictTo = require("../middlewares/restrictTo");
 const productController = require("../controllers/product");
+const wishlistRoute = require("./wishlist");
 const reviewRoute = require("./review");
 
 const router = express.Router();
@@ -33,6 +34,7 @@ router
     productController.deleteProduct
   );
 
+router.use("/:productId/wishlists", wishlistRoute);
 router.use("/:productId/reviews", reviewRoute);
 
 module.exports = router;
