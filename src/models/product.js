@@ -32,8 +32,20 @@ const productSchema = mongoose.Schema(
       required: [true, "Product price is required"],
     },
     discount: {
-      type: Number,
-      default: 0,
+      amount: {
+        type: Number,
+        default: 0,
+        validate: {
+          validator: function (value) {
+            return value < this.price;
+          },
+          message: "Discount price must be less than original price",
+        },
+      },
+      rate: {
+        type: Number,
+        default: 0,
+      },
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,

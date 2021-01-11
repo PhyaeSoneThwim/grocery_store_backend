@@ -1,15 +1,16 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 const categorySchema = mongoose.Schema(
   {
     title: {
       type: String,
       required: [true, "Category title is requried"],
     },
-    description: String,
     mmTitle: {
       type: String,
       required: [true, "Category myanmar title is required"],
     },
+    description: String,
     mmDescription: String,
     isFeatured: {
       type: Boolean,
@@ -19,17 +20,13 @@ const categorySchema = mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    parentId: {
-      type: String,
-      required: [true, "Parent category is required"],
-    },
     slug: String,
   },
   { timestamps: true }
 );
 categorySchema.pre("save", function (next) {
-  this.slug = slugify(this.name, { lower: true });
+  this.slug = slugify(this.title, { lower: true });
   next();
 });
-const Category = mongoose.Model("Category", categorySchema);
+const Category = mongoose.model("Category", categorySchema);
 module.exports = Category;
