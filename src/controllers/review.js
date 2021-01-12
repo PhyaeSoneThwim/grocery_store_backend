@@ -7,7 +7,7 @@ const Review = require("../models/review");
  * @route  -> POST /api/products/:productId/reviews
  * @access -> Private
  * @allow  -> ["user"]
- * @status -> Enhancement
+ * @status -> Finished
  */
 exports.addReview = catchAsync(async (req, res, next) => {
   const existReview = await Review.findOne({ user: req.user._id });
@@ -29,7 +29,7 @@ exports.addReview = catchAsync(async (req, res, next) => {
  * @desc   -> get all reviews
  * @route  -> GET /api/products/:productId/reviews
  * @access -> Private
- * @status -> Enhancement
+ * @status -> Finished
  */
 exports.getReviews = catchAsync(async (req, res, next) => {
   const reviews = await Review.find(req.params.propertyId);
@@ -49,7 +49,7 @@ exports.getReviews = catchAsync(async (req, res, next) => {
  * @desc   -> get review by id
  * @route  -> GET /api/products/:productId/reviews/:id
  * @access -> Private
- * @status -> Enhancement
+ * @status -> Finished
  */
 exports.getReview = catchAsync(async (req, res, next) => {
   const review = await Review.findById(req.params.id);
@@ -69,7 +69,7 @@ exports.getReview = catchAsync(async (req, res, next) => {
  * @route  -> PATCH /api/products/:productId/reviews/:id
  * @access -> Private
  * @allow  -> ["user"]
- * @status -> Enhancement
+ * @status -> Finished
  */
 exports.updateReview = catchAsync(async (req, res, next) => {
   const review = await Review.findById(req.params.id);
@@ -99,7 +99,7 @@ exports.updateReview = catchAsync(async (req, res, next) => {
  * @route  -> DELETE /api/products/:productId/reviews/:id
  * @access -> Private
  * @allow  -> ["user"]
- * @status -> Enhancement
+ * @status -> Finished
  */
 exports.deleteReview = catchAsync(async (req, res, next) => {
   const review = await Review.findById(req.params.id);

@@ -7,7 +7,7 @@ const AppError = require("../utils/appError");
  * @route  -> POST /api/products/:productId/wishlists
  * @access -> Private
  * @allow  -> ["user"]
- * @status -> Progress
+ * @status -> Finished
  */
 exports.addWishlist = catchAsync(async (req, res, next) => {
   const wishlist = await Wishlist.create(req.body);
@@ -24,11 +24,11 @@ exports.addWishlist = catchAsync(async (req, res, next) => {
  * @route  -> POST /api/products/:productId/wishlists
  * @access -> Private
  * @allow  -> ["user"]
- * @status -> Progress
+ * @status -> Finished
  */
 
 exports.getWishlists = catchAsync(async (req, res, next) => {
-  const wishlists = await Wishlist.find();
+  const wishlists = await Wishlist.find({ user: req.user._id });
   if (!wishlists.length > 0) {
     return next(new AppError("No wishlists found", 404));
   }
@@ -45,7 +45,7 @@ exports.getWishlists = catchAsync(async (req, res, next) => {
  * @route  -> POST /api/products/:productId/wishlists
  * @access -> Private
  * @allow  -> ["user"]
- * @status -> Progress
+ * @status -> Finished
  */
 exports.deleteWishlist = catchAsync(async (req, res, next) => {
   const wishlist = await Wishlist.findById(req.params.id);
