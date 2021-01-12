@@ -20,7 +20,7 @@ const reviewSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
-      unique: [true, "Only one user can review at a time"],
+      unique: true,
       required: [true, "Review must belong to a user"],
     },
   },

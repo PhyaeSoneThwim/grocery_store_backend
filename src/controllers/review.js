@@ -10,6 +10,12 @@ const Review = require("../models/review");
  * @status -> Enhancement
  */
 exports.addReview = catchAsync(async (req, res, next) => {
+  const existReview = await Review.find({ user: req.user._id });
+  if (existReview) {
+    return next(
+      new AppError("Only one user can review product at a time", 409)
+    );
+  }
   const review = await Review.create(req.body);
   res.status(201).json({
     status: "success",

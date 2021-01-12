@@ -12,7 +12,10 @@ const Review = require("../models/review");
  * @allow  -> ["admin","super-admin"]
  */
 exports.addProduct = catchAsync(async (req, res, next) => {
-  const product = await Product.create(req.body);
+  // assign user._id from protect middleware
+  const product = await Product.create(
+    _.assign(req.body, { user: req.user._id })
+  );
   res.status(201).json({
     status: "success",
     data: {

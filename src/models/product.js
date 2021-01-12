@@ -12,6 +12,10 @@ const productSchema = mongoose.Schema(
       type: String,
       required: [true, "Product name is required"],
     },
+    mmName: {
+      type: String,
+      required: [true, "Product myanamr name is required"],
+    },
     image: {
       type: String,
       required: [true, "Product image is required"],
@@ -19,8 +23,6 @@ const productSchema = mongoose.Schema(
     ratings: {
       type: Number,
       default: 0.0,
-      min: [1, "Rating must be above 1.0"],
-      max: [5, "Rating must be below 5.0"],
       set: (val) => Math.round(val * 10) / 10,
     },
     numReviews: {
@@ -31,21 +33,16 @@ const productSchema = mongoose.Schema(
       type: Number,
       required: [true, "Product price is required"],
     },
-    discount: {
-      amount: {
-        type: Number,
-        default: 0,
-        validate: {
-          validator: function (value) {
-            return value < this.price;
-          },
-          message: "Discount price must be less than original price",
+    priceDiscount: {
+      type: Number,
+      default: 0,
+      validate: {
+        validator: function(val) {
+          // this only points to current doc on NEW document creation
+          return val < this.price;
         },
-      },
-      rate: {
-        type: Number,
-        default: 0,
-      },
+        message: 'Discount price ({VALUE}) should be below regular price'
+      }
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,
@@ -67,7 +64,10 @@ productSchema.virtual("reviews", {
 });
 
 productSchema.pre(/^find/, function (next) {
-  this.populate("reviews");
+  this.populate("reviews").populate({
+    path: "category",
+    select: "title mmTitle -_id",
+  });
   next();
 });
 
