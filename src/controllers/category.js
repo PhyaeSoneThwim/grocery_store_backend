@@ -1,6 +1,7 @@
 const catchAsync = require("express-async-handler");
 const AppError = require("../utils/appError");
 const Category = require("../models/category");
+const unLink = require("../utils/unLink");
 
 /**
  * @desc   -> Add category
@@ -69,6 +70,13 @@ exports.updateCategory = catchAsync(async (req, res, next) => {
   if (!category) {
     return next(new AppError("No category found", 404));
   }
+
+  // delete existing image for image update
+  if (req.body.cover && category.cover) {
+    unLink(`public/img/categories/${category.cover}`);
+  }
+
+  // update category with incoming updated data
   const updatedCategory = await Category.findByIdAndUpdate(
     req.params.id,
     req.body,

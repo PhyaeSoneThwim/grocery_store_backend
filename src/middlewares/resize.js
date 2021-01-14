@@ -27,3 +27,16 @@ exports.resizeImage = catchAsync(async (req, res, next) => {
   req.body.image = filename;
   next();
 });
+
+// @desc -> resize category cover image
+exports.resizeCover = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
+  const filename = `${req.file.fieldname}-${uuid()}.jpeg`;
+  await sharp(req.file.buffer)
+    .resize(2000, 1333)
+    .toFormat("jpeg")
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/categories/${filename}`);
+  req.body.cover = filename;
+  next();
+});
