@@ -1,3 +1,4 @@
+const _ = require("lodash");
 const catchAsync = require("express-async-handler");
 const AppError = require("../utils/appError");
 const Category = require("../models/category");
@@ -40,13 +41,28 @@ exports.getCategory = catchAsync(async (req, res, next) => {
 });
 
 /**
+ * @desc   -> middleware to get top 3 featured products
+ * @route  -> GET /api/categories/top-3-featured
+ * @access -> Public
+ * @status -> Progress
+ */
+exports.getFeaturedProducts = (req, res, next) => {
+  req.query.limit = 3;
+  req.query.isFeatured = true;
+  next();
+};
+
+/**
  * @desc   -> Get all categories
  * @route  -> GET /api/categories
  * @access -> Public
  * @status -> Finished
  */
 exports.getCategories = catchAsync(async (req, res, next) => {
-  const categories = await Category.find({});
+  const categories = await Category.find({
+    isFeatured: !!req.query.isFeatured,
+  }).limit(req.query.limit);
+
   if (!categories.length > 0) {
     return next(new AppError("No categories found", 404));
   }

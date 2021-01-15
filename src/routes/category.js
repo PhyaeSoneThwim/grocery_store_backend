@@ -8,6 +8,12 @@ const router = express.Router();
 
 const authorize = restrictTo("super-admin", "admin");
 
+router.get(
+  "/top-3-featured",
+  categoryController.getFeaturedProducts,
+  categoryController.getCategories
+);
+
 router
   .route("/")
   .get(categoryController.getCategories)
