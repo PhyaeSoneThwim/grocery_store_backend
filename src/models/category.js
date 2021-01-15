@@ -38,6 +38,7 @@ categorySchema.pre("save", function (next) {
 // delete all products related to deleted category
 categorySchema.pre("remove", async function (next) {
   const products = await Product.find({ category: this._id });
+
   if (this.cover) {
     unLink(`public/img/categories/${this.cover}`);
   }

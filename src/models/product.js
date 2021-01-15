@@ -37,9 +37,8 @@ const productSchema = mongoose.Schema(
       type: Number,
       default: 0,
       validate: {
-        validator: function (val) {
-          // this only points to current doc on NEW document creation
-          return val < this.price;
+        validator: function (discount) {
+          return discount < this.price;
         },
         message: "Discount price ({VALUE}) should be below regular price",
       },

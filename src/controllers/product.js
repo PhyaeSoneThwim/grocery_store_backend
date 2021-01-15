@@ -49,8 +49,8 @@ exports.getProduct = catchAsync(async (req, res, next) => {
  * @access -> Public
  */
 exports.getProductsByCategory = catchAsync(async (req, res, next) => {
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 5;
+  const page = req.query.page * 1;
+  const limit = req.query.limit * 1;
   const skip = (page - 1) * limit;
 
   const categories = await Category.find().skip(skip).limit(limit).lean();
@@ -77,12 +77,28 @@ exports.getProductsByCategory = catchAsync(async (req, res, next) => {
  * @access -> Public
  */
 exports.getProducts = catchAsync(async (req, res, next) => {
-  const products = await Product.find({});
+  const page = req.query.page * 1;
+  const limit = req.query.limit * 1;
+  const skip = (page - 1) * limit;
+
+  let query = {};
+  if (req.query.name) {
+    query.name = {
+      $regex: req.query.name,
+      $options: "i",
+    };
+  }
+  if (req.query.discount) {
+    query.priceDiscount = { $gt: 0 };
+  }
+
+  const products = await Product.find(query).skip(skip).limit(limit);
   if (!products.length > 0) {
     return next(new AppError("No products found", 404));
   }
   res.status(200).json({
     status: "success",
+    total: products.length,
     data: {
       products,
     },
@@ -96,12 +112,18 @@ exports.getProducts = catchAsync(async (req, res, next) => {
  * @allow  -> ["admin","super-admin"]
  */
 exports.updateProduct = catchAsync(async (req, res, next) => {
+  const { priceDiscount } = req.body;
   const product = await Product.findById(req.params.id);
   if (!product) {
     return next(new AppError("No product fond", 404));
   }
 
-  // @desc -> delete & update with new image
+  // check whether discount price will be less than normal price
+  if (priceDiscount && product.price <= priceDiscount) {
+    return next(new AppError(`Discount should be below regular price`, 400));
+  }
+
+  // delete & update with new image
   if (req.body.image) {
     unLink(`public/img/products/${product.image}`);
   }
@@ -109,7 +131,7 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
   const updatedProduct = await Product.findByIdAndUpdate(
     req.params.id,
     req.body,
-    { new: true, runValidators: true }
+    { new: true, runValidators: false }
   );
   res.status(200).json({
     status: "success",
