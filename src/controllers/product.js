@@ -2,6 +2,7 @@ const _ = require("lodash");
 const catchAsync = require("express-async-handler");
 const unLink = require("../utils/unLink");
 const Product = require("../models/product");
+const Category = require("../models/category");
 const AppError = require("../utils/appError");
 const Review = require("../models/review");
 
@@ -38,6 +39,34 @@ exports.getProduct = catchAsync(async (req, res, next) => {
     status: "success",
     data: {
       product,
+    },
+  });
+});
+
+/**
+ * @desc   -> get products grouped by category
+ * @route  -> GET /api/products/categoried-product
+ * @access -> Public
+ */
+exports.getProductsByCategory = catchAsync(async (req, res, next) => {
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 5;
+  const skip = (page - 1) * limit;
+
+  const categories = await Category.find().skip(skip).limit(limit).lean();
+
+  // grouped products by category
+  const products = await Promise.all(
+    categories.map(async (category) => {
+      const groupedProducts = await Product.find({ category: category._id });
+      return { ...category, products: groupedProducts };
+    })
+  );
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      products,
     },
   });
 });

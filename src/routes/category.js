@@ -18,6 +18,7 @@ router
     resizeCover,
     categoryController.addCategory
   );
+
 router
   .route("/:id")
   .get(categoryController.getCategory)

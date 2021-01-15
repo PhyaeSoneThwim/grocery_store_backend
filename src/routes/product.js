@@ -18,6 +18,8 @@ router
     productController.addProduct
   )
   .get(productController.getProducts);
+
+router.get('/categorized-products', productController.getProductsByCategory);
 router
   .route("/:id")
   .get(productController.getProduct)

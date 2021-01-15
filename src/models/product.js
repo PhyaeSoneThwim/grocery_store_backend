@@ -37,12 +37,12 @@ const productSchema = mongoose.Schema(
       type: Number,
       default: 0,
       validate: {
-        validator: function(val) {
+        validator: function (val) {
           // this only points to current doc on NEW document creation
           return val < this.price;
         },
-        message: 'Discount price ({VALUE}) should be below regular price'
-      }
+        message: "Discount price ({VALUE}) should be below regular price",
+      },
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,
@@ -64,10 +64,7 @@ productSchema.virtual("reviews", {
 });
 
 productSchema.pre(/^find/, function (next) {
-  this.populate("reviews").populate({
-    path: "category",
-    select: "title mmTitle -_id",
-  });
+  this.populate("reviews");
   next();
 });
 
