@@ -19,7 +19,10 @@ router.put("/:id/pay", restrictTo("user"), orderController.updateOrderToPaid);
 // route to make order successfully delivered to user
 router.put("/:id/deliver", authorize, orderController.updateOrderToDelivered);
 
-router.route("/").post(orderController.addOrder).get(orderController.getOrders);
+router
+  .route("/")
+  .post(restrictTo("user"), orderController.addOrder)
+  .get(orderController.getOrders);
 
 router
   .route("/:id")

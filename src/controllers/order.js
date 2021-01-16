@@ -1,3 +1,4 @@
+const _ = require("lodash");
 const catchAsync = require("express-async-handler");
 const AppError = require("../utils/appError");
 const Order = require("../models/order");
@@ -7,10 +8,10 @@ const Order = require("../models/order");
  * @route  -> POST /api/orders
  * @access -> Private
  * @allow  -> ["user"]
- * @status -> Progress
+ * @status -> Finished
  */
 exports.addOrder = catchAsync(async (req, res, next) => {
-  const order = await Order.create(req.body);
+  const order = await Order.create(_.assign(req.body, { user: req.user._id }));
   res.status(201).json({
     status: "success",
     data: {
@@ -24,7 +25,7 @@ exports.addOrder = catchAsync(async (req, res, next) => {
  * @route  -> GET /api/orders/:id
  * @access -> Private
  * @allow  -> ["user","admin","super-admin"]
- * @status -> Progress
+ * @status -> Finished
  */
 exports.getOrder = catchAsync(async (req, res, next) => {
   const order = await Order.findById(req.params.id);
@@ -44,7 +45,7 @@ exports.getOrder = catchAsync(async (req, res, next) => {
  * @route  -> GET /api/orders
  * @access -> Private
  * @allow  -> ["admin","super-admin"]
- * @status -> Progress
+ * @status -> Finished
  */
 
 exports.getOrders = catchAsync(async (req, res, next) => {
@@ -70,7 +71,7 @@ exports.getOrders = catchAsync(async (req, res, next) => {
  * @route  -> GET /api/orders/my-orders
  * @access -> Private
  * @allow  -> ["user"]
- * @status -> Progress
+ * @status -> Finished
  */
 exports.getMyOrders = catchAsync(async (req, res, next) => {
   const page = req.query.page * 1;
@@ -99,15 +100,23 @@ exports.getMyOrders = catchAsync(async (req, res, next) => {
  * @route  -> PUT /api/orders/:id/pay
  * @access -> Private
  * @allow  -> ["user"]
- * @status -> Progress
+ * @status -> Finished
  */
 exports.updateOrderToPaid = catchAsync(async (req, res, next) => {
+  const { paymentResult } = req.body;
   const order = await Order.findById(req.params.id);
   if (!order) {
     return next(new AppError("No order found", 404));
   }
+
+  if (!paymentResult) {
+    return next(new AppError("Payment process is not succeed", 402));
+  }
+
   order.isPaid = true;
   order.paidAt = Date.now();
+  order.paymentResult = paymentResult;
+
   const updatedOrder = await order.save();
   res.status(200).json({
     status: "success",
@@ -122,7 +131,7 @@ exports.updateOrderToPaid = catchAsync(async (req, res, next) => {
  * @route  -> PUT /api/orders/:id/deliver
  * @access -> Private
  * @allow  -> ["admin","super-admin"]
- * @status -> Progress
+ * @status -> Finished
  */
 exports.updateOrderToDelivered = catchAsync(async (req, res, next) => {
   const order = await Order.findById(req.params.id);
@@ -148,7 +157,7 @@ exports.updateOrderToDelivered = catchAsync(async (req, res, next) => {
  * @route  -> DELETE /api/orders/:id
  * @access -> Private
  * @allow  -> ["admin","super-admin"]
- * @status -> Progress
+ * @status -> Finished
  */
 exports.deleteOrder = catchAsync(async (req, res, next) => {
   const order = await Order.findById(req.params.id);
